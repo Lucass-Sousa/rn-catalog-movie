@@ -41,15 +41,6 @@ export default function CatalogScreen() {
     }
   };
 
-  // Enquanto estiver carregando os dados, mostramos um ícone girando
-  if (loading) {
-    return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </View>
-    );
-  }
-
   // Filtrando os dados que chegaram do servidor
   const featuredMovie = movies.find(m => m.isFeatured) || movies[0];
   const trendingMovies = movies.filter(m => m.isTrending);
@@ -57,74 +48,72 @@ export default function CatalogScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        {/* Cabeçalho */}
-        <View style={styles.header}>
-          <Text style={styles.logo}>NETFLIX</Text>
-          <View style={styles.headerLinks}>
-            <Link href="/favorites" asChild>
-              <TouchableOpacity><Text style={styles.headerText}>Favoritos</Text></TouchableOpacity>
-            </Link>
-            <Link href="/add" asChild>
-              <TouchableOpacity><Text style={styles.headerText}>Adicionar</Text></TouchableOpacity>
-            </Link>
+      {loading ? (
+        <View style={[{ flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+          {/* Cabeçalho */}
+          <View style={styles.header}>
+            <Text style={styles.logo}>NETFLIX</Text>
           </View>
-        </View>
 
-        {/* Destaque Principal */}
-        {featuredMovie && (
-          <Link href={`/movie/${featuredMovie.id}`} asChild>
-            <TouchableOpacity style={styles.featuredContainer}>
-              <Image 
-                source={{ uri: featuredMovie.image }} 
-                style={styles.featuredImage} 
-              />
-              <View style={styles.featuredGradient}>
-                <Text style={styles.featuredCategories}>
-                  {featuredMovie.categories?.join(' • ')}
-                </Text>
-                <View style={styles.featuredButtons}>
-                  <TouchableOpacity style={styles.playButton}>
-                    <Text style={styles.playButtonText}>▶ Assistir</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.infoButton}>
-                    <Text style={styles.infoButtonText}>ⓘ Saiba mais</Text>
-                  </TouchableOpacity>
+          {/* Destaque Principal */}
+          {featuredMovie && (
+            <Link href={`/movie/${featuredMovie.id}`} asChild>
+              <TouchableOpacity style={styles.featuredContainer}>
+                <Image 
+                  source={{ uri: featuredMovie.image }} 
+                  style={styles.featuredImage} 
+                />
+                <View style={styles.featuredGradient}>
+                  <Text style={styles.featuredCategories}>
+                    {featuredMovie.categories?.join(' • ')}
+                  </Text>
+                  <View style={styles.featuredButtons}>
+                    <TouchableOpacity style={styles.playButton}>
+                      <Text style={styles.playButtonText}>▶ Assistir</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.infoButton}>
+                      <Text style={styles.infoButtonText}>ⓘ Saiba mais</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </Link>
-        )}
+              </TouchableOpacity>
+            </Link>
+          )}
 
-        {/* Lista de Filmes: Em Alta */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Em Alta</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
-            {trendingMovies.map(movie => (
-              <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
-                <TouchableOpacity>
-                  <Image source={{ uri: movie.image }} style={styles.moviePoster} />
-                </TouchableOpacity>
-              </Link>
-            ))}
-          </ScrollView>
-        </View>
+          {/* Lista de Filmes: Em Alta */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Em Alta</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
+              {trendingMovies.map(movie => (
+                <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
+                  <TouchableOpacity>
+                    <Image source={{ uri: movie.image }} style={styles.moviePoster} />
+                  </TouchableOpacity>
+                </Link>
+              ))}
+            </ScrollView>
+          </View>
 
-        {/* Lista de Filmes: Adicionados Recentemente */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Adicionados Recentemente</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
-            {recentMovies.map(movie => (
-              <Link key={`recent-${movie.id}`} href={`/movie/${movie.id}`} asChild>
-                <TouchableOpacity>
-                  <Image source={{ uri: movie.image }} style={styles.moviePoster} />
-                </TouchableOpacity>
-              </Link>
-            ))}
-          </ScrollView>
-        </View>
+          {/* Lista de Filmes: Adicionados Recentemente */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Adicionados Recentemente</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
+              {recentMovies.map(movie => (
+                <Link key={`recent-${movie.id}`} href={`/movie/${movie.id}`} asChild>
+                  <TouchableOpacity>
+                    <Image source={{ uri: movie.image }} style={styles.moviePoster} />
+                  </TouchableOpacity>
+                </Link>
+              ))}
+            </ScrollView>
+          </View>
 
-      </ScrollView>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }

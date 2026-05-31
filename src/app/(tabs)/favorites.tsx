@@ -37,37 +37,31 @@ export default function FavoritesScreen() {
     }
   };
 
-  if (loading) {
-    return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.headerButton}>← Voltar</Text>
-        </TouchableOpacity>
         <Text style={styles.title}>Minha Lista</Text>
-        <View style={{width: 60}} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.gridContainer}>
-        {favorites.length === 0 ? (
-          <Text style={{ color: 'white', textAlign: 'center', width: '100%' }}>Nenhum favorito encontrado.</Text>
-        ) : (
-          favorites.map(movie => (
-            <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
-              <TouchableOpacity style={styles.gridItem}>
-                <Image source={{ uri: movie.image }} style={styles.moviePoster} />
-              </TouchableOpacity>
-            </Link>
-          ))
-        )}
-      </ScrollView>
+      {loading ? (
+        <View style={[{ flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={[styles.gridContainer, { paddingBottom: 100 }]}>
+          {favorites.length === 0 ? (
+            <Text style={{ color: 'white', textAlign: 'center', width: '100%' }}>Nenhum favorito encontrado.</Text>
+          ) : (
+            favorites.map(movie => (
+              <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
+                <TouchableOpacity style={styles.gridItem}>
+                  <Image source={{ uri: movie.image }} style={styles.moviePoster} />
+                </TouchableOpacity>
+              </Link>
+            ))
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }

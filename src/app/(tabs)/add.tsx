@@ -6,16 +6,11 @@ import { router } from "expo-router";
 export default function AddMovieScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header Simples */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.headerButton}>← Voltar</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>Novo Título</Text>
-        <View style={{width: 60}} /> {/* Spacer */}
       </View>
 
-      <ScrollView style={styles.formContainer}>
+      <ScrollView style={styles.formContainer} contentContainerStyle={{ paddingBottom: 100 }}>
         <Text style={styles.label}>Título do Filme/Série</Text>
         <TextInput 
           style={styles.input}
