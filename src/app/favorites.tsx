@@ -1,17 +1,50 @@
-import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { Link, router } from "expo-router";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-// Dados falsos
-const FAVORITES = [
-  { id: '1', image: 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8sXcpCWvm.jpg' },
-  { id: '2', image: 'https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg' },
-  { id: '3', image: 'https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg' },
-  { id: '4', image: 'https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg' },
-];
+// O mesmo tipo de dados da tela inicial
+interface Movie {
+  id: string;
+  title: string;
+  image: string;
+  isFavorite: boolean;
+}
 
 export default function FavoritesScreen() {
+  // 1. A Caixa Mágica (useState)
+  const [favorites, setFavorites] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // 2. O Gatilho (useEffect)
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  // 3. O Garçom (Ação com Axios)
+  const fetchFavorites = async () => {
+    try {
+      // Como o json-server é legal, podemos filtrar direto na URL!
+      // O "?isFavorite=true" diz para ele trazer apenas os favoritos.
+      const response = await axios.get('http://localhost:3000/movies?isFavorite=true');
+      setFavorites(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar favoritos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -23,13 +56,17 @@ export default function FavoritesScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.gridContainer}>
-        {FAVORITES.map(movie => (
-          <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
-            <TouchableOpacity style={styles.gridItem}>
-              <Image source={{ uri: movie.image }} style={styles.moviePoster} />
-            </TouchableOpacity>
-          </Link>
-        ))}
+        {favorites.length === 0 ? (
+          <Text style={{ color: 'white', textAlign: 'center', width: '100%' }}>Nenhum favorito encontrado.</Text>
+        ) : (
+          favorites.map(movie => (
+            <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
+              <TouchableOpacity style={styles.gridItem}>
+                <Image source={{ uri: movie.image }} style={styles.moviePoster} />
+              </TouchableOpacity>
+            </Link>
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );
