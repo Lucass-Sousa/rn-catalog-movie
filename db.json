@@ -5,10 +5,7 @@
       "title": "Wandinha",
       "image": "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
       "year": "2022",
-      "ageLimit": "14",
-      "seasons": "1 Temporada",
       "description": "Inteligente, sarcástica e um pouco morta por dentro, Wandinha Addams investiga uma onda de assassinatos enquanto faz novos amigos - e inimigos - na Escola Nunca Mais.",
-      "cast": "Jenna Ortega, Gwendoline Christie, Riki Lindhome",
       "categories": [
         "Comédia",
         "Fantasia",
@@ -24,10 +21,7 @@
       "title": "Lúcifer",
       "image": "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
       "year": "2021",
-      "ageLimit": "16",
-      "seasons": "6 Temporadas",
       "description": "Entediado com a vida nas trevas, o diabo se muda para Los Angeles, abre um piano-bar e empresta sua sabedoria a uma investigadora de assassinatos.",
-      "cast": "Tom Ellis, Lauren German, Kevin Alejandro",
       "categories": [
         "Crime",
         "Fantasia"
@@ -42,10 +36,7 @@
       "title": "A Casa do Dragão",
       "image": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
       "year": "2022",
-      "ageLimit": "18",
-      "seasons": "1 Temporada",
       "description": "A história da Casa Targaryen, 200 anos antes dos eventos de Game of Thrones.",
-      "cast": "Paddy Considine, Matt Smith, Emma D'Arcy",
       "categories": [
         "Ação",
         "Aventura",

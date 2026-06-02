@@ -31,10 +31,7 @@ export default function AddMovieScreen() {
         isTrending: false,
         isRecent: true,
         isFavorite: false,
-        description,
-        ageLimit: "L", // Default age limit
-        seasons: "Filme", // Default
-        cast: "Elenco desconhecido" // Default
+        description
       };
 
       await axios.post(`${apiUrl}/movies`, newMovie);

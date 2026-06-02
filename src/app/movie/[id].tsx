@@ -11,10 +11,7 @@ interface Movie {
   title: string;
   image: string;
   year: string;
-  ageLimit: string;
-  seasons: string;
   description: string;
-  cast: string;
   categories: string[];
   isFavorite?: boolean;
 }
@@ -153,16 +150,13 @@ export default function MovieDetailsScreen() {
           <Text style={styles.title}>{movie.title}</Text>
           
           <View style={styles.metaRow}>
-            <Text style={styles.matchText}>98% Relevante</Text>
             <Text style={styles.metaText}>{movie.year}</Text>
-            <View style={styles.ageBadge}>
-              <Text style={styles.ageText}>{movie.ageLimit}</Text>
-            </View>
-            <Text style={styles.metaText}>{movie.seasons}</Text>
           </View>
 
-          <TouchableOpacity style={styles.playButton}>
-            <Text style={styles.playButtonText}>▶ Assistir</Text>
+          <TouchableOpacity style={styles.playButton} onPress={toggleFavorite}>
+            <Text style={[styles.playButtonText, movie.isFavorite && { color: Colors.primary }]}>
+              {movie.isFavorite ? '♥ Favorito' : '♡ Favoritar'}
+            </Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={[styles.downloadButton, { backgroundColor: Colors.error }]} onPress={handleDelete}>
@@ -170,24 +164,7 @@ export default function MovieDetailsScreen() {
           </TouchableOpacity>
 
           <Text style={styles.description}>{movie.description}</Text>
-          <Text style={styles.cast}>Elenco: {movie.cast}</Text>
 
-          <View style={styles.actionsRow}>
-            <TouchableOpacity style={styles.actionItem} onPress={toggleFavorite}>
-              <Text style={[styles.actionIcon, movie.isFavorite && { color: Colors.primary }]}>
-                {movie.isFavorite ? '♥' : '♡'}
-              </Text>
-              <Text style={styles.actionText}>{movie.isFavorite ? 'Favorito' : 'Favoritar'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionItem}>
-              <Text style={styles.actionIcon}>👍</Text>
-              <Text style={styles.actionText}>Classifique</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionItem}>
-              <Text style={styles.actionIcon}>✈️</Text>
-              <Text style={styles.actionText}>Compartilhe</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
