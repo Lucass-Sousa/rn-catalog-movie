@@ -3,8 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { Link, useFocusEffect } from "expo-router";
 import { useState, useCallback } from "react"; // 1. Importamos os Hooks
-import axios from "axios";
-
+import { movieService } from "@/services/api";
 interface Movie {
   id: string;
   title: string;
@@ -14,7 +13,6 @@ interface Movie {
   isTrending: boolean;
   isRecent: boolean;
 }
-const apiUrl = process.env.EXPO_PUBLIC_API_URL
 
 export default function CatalogScreen() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -28,9 +26,8 @@ export default function CatalogScreen() {
 
   const fetchMovies = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/movies`); 
-      
-      setMovies(response.data); 
+      const data = await movieService.getMovies(); 
+      setMovies(data); 
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
     } finally {

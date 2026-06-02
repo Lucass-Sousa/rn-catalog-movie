@@ -3,8 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { Link, router, useFocusEffect } from "expo-router";
 import { useState, useCallback } from "react";
-import axios from "axios";
-
+import { movieService } from "@/services/api";
 
 interface Movie {
   id: string;
@@ -12,8 +11,6 @@ interface Movie {
   image: string;
   isFavorite: boolean;
 }
-
-const apiUrl = process.env.EXPO_PUBLIC_API_URL
 
 export default function FavoritesScreen() {
   const [favorites, setFavorites] = useState<Movie[]>([]);
@@ -27,8 +24,8 @@ export default function FavoritesScreen() {
 
   const fetchFavorites = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/movies?isFavorite=true`);
-      setFavorites(response.data);
+      const data = await movieService.getFavorites();
+      setFavorites(data);
     } catch (error) {
       console.error("Erro ao buscar favoritos:", error);
     } finally {

@@ -4,8 +4,7 @@ import { Colors } from "../../constants/Colors";
 import { useLocalSearchParams } from "expo-router";
 import { router } from "expo-router";
 import { useState, useEffect } from "react";
-import axios from "axios";
-
+import { movieService } from "@/services/api";
 interface Movie {
   id: string;
   title: string;
@@ -16,7 +15,6 @@ interface Movie {
   isFavorite?: boolean;
 }
 
-const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function MovieDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -26,8 +24,8 @@ export default function MovieDetailsScreen() {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/movies/${id}`);
-        setMovie(response.data);
+        const data = await movieService.getMovieById(id as string);
+        setMovie(data);
       } catch (error) {
         console.error("Erro ao buscar os detalhes do filme:", error);
       } finally {
@@ -43,7 +41,7 @@ export default function MovieDetailsScreen() {
   const handleDelete = async () => {
     const deleteAction = async () => {
       try {
-        await axios.delete(`${apiUrl}/movies/${id}`);
+        await movieService.deleteMovie(id as string);
         if (Platform.OS !== 'web') {
           Alert.alert("Sucesso", "Filme excluído!");
         } else {
@@ -85,7 +83,7 @@ export default function MovieDetailsScreen() {
     if (!movie) return;
     try {
       const updatedMovie = { ...movie, isFavorite: !movie.isFavorite };
-      await axios.patch(`${apiUrl}/movies/${id}`, { isFavorite: !movie.isFavorite });
+      await movieService.toggleFavorite(id as string, updatedMovie.isFavorite);
       setMovie(updatedMovie);
     } catch (error) {
       console.error("Erro ao favoritar filme:", error);

@@ -3,8 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
 import { useState } from "react";
-import axios from "axios";
-
+import { movieService } from "@/services/api";
 export default function AddMovieScreen() {
   const [title, setTitle] = useState('');
   const [image, setImage] = useState('');
@@ -12,7 +11,6 @@ export default function AddMovieScreen() {
   const [genre, setGenre] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL
 
   const handleSave = async () => {
     if (!title || !image || !year || !genre || !description) {
@@ -35,7 +33,7 @@ export default function AddMovieScreen() {
         description
       };
 
-      await axios.post(`${apiUrl}/movies`, newMovie);
+      await movieService.createMovie(newMovie);
       Alert.alert("Sucesso", "Filme adicionado com sucesso!");
       
       // Clear form
