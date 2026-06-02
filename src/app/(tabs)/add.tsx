@@ -12,6 +12,7 @@ export default function AddMovieScreen() {
   const [genre, setGenre] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL
 
   const handleSave = async () => {
     if (!title || !image || !year || !genre || !description) {
@@ -21,7 +22,7 @@ export default function AddMovieScreen() {
 
     setLoading(true);
     try {
-      const apiUrl =  'http://localhost:3000';
+      
       const newMovie = {
         title,
         image,

@@ -5,7 +5,7 @@ import { Link, router, useFocusEffect } from "expo-router";
 import { useState, useCallback } from "react";
 import axios from "axios";
 
-// O mesmo tipo de dados da tela inicial
+
 interface Movie {
   id: string;
   title: string;
@@ -13,24 +13,20 @@ interface Movie {
   isFavorite: boolean;
 }
 
+const apiUrl = process.env.EXPO_PUBLIC_API_URL
+
 export default function FavoritesScreen() {
-  // 1. A Caixa Mágica (useState)
   const [favorites, setFavorites] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 2. O Gatilho (useFocusEffect para atualizar sempre que a aba abrir)
   useFocusEffect(
     useCallback(() => {
       fetchFavorites();
     }, [])
   );
 
-  // 3. O Garçom (Ação com Axios)
   const fetchFavorites = async () => {
     try {
-      // Como o json-server é legal, podemos filtrar direto na URL!
-      // O "?isFavorite=true" diz para ele trazer apenas os favoritos.
-      const apiUrl = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
       const response = await axios.get(`${apiUrl}/movies?isFavorite=true`);
       setFavorites(response.data);
     } catch (error) {

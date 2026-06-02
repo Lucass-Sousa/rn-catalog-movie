@@ -14,6 +14,7 @@ interface Movie {
   isTrending: boolean;
   isRecent: boolean;
 }
+const apiUrl = process.env.EXPO_PUBLIC_API_URL
 
 export default function CatalogScreen() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -27,7 +28,6 @@ export default function CatalogScreen() {
 
   const fetchMovies = async () => {
     try {
-      const apiUrl = 'http://localhost:3000';
       const response = await axios.get(`${apiUrl}/movies`); 
       
       setMovies(response.data); 
@@ -53,6 +53,7 @@ export default function CatalogScreen() {
           {/* Cabeçalho */}
           <View style={styles.header}>
             <Image source={require('../../assets/logo-nxt.png')} style={styles.logoImage} resizeMode="contain" />
+            <Text style={styles.headerBrandName}>NExTI FLIX</Text>
           </View>
 
           {/* Destaque Principal */}
@@ -64,15 +65,18 @@ export default function CatalogScreen() {
                   style={styles.featuredImage} 
                 />
                 <View style={styles.featuredGradient}>
+                  <Text style={styles.featuredTitle}>
+                    {featuredMovie.title}
+                  </Text>
                   <Text style={styles.featuredCategories}>
                     {featuredMovie.categories?.join(' • ')}
                   </Text>
                   <View style={styles.featuredButtons}>
                     <TouchableOpacity style={styles.playButton}>
-                      <Text style={styles.playButtonText}>▶ Assistir</Text>
+                      <Text style={styles.playButtonText}>Assistir</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.infoButton}>
-                      <Text style={styles.infoButtonText}>ⓘ Saiba mais</Text>
+                      <Text style={styles.infoButtonText}>Saiba mais</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -143,6 +147,12 @@ const styles = StyleSheet.create({
     width: 45,
     marginLeft: 0,
   },
+  headerBrandName: {
+    color: Colors.primary,
+    fontSize: 24,
+    fontWeight: '900',
+    letterSpacing: -0.5,
+  },
   headerLinks: {
     flexDirection: 'row',
     gap: 15,
@@ -173,6 +183,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 20,
     backgroundColor: 'rgba(20, 20, 20, 0.6)', // Gradiente falso escurecendo a base
+  },
+  featuredTitle: {
+    color: Colors.white,
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10
   },
   featuredCategories: {
     color: Colors.text,
