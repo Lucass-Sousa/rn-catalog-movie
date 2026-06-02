@@ -51,7 +51,7 @@ export default function CatalogScreen() {
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
           {/* Cabeçalho */}
           <View style={styles.header}>
-            <Text style={styles.logo}>NETFLIX</Text>
+            <Text style={styles.logo}>NExTIFlix</Text>
           </View>
 
           {/* Destaque Principal */}
