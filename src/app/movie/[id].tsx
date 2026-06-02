@@ -16,6 +16,8 @@ interface Movie {
   isFavorite?: boolean;
 }
 
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
 export default function MovieDetailsScreen() {
   const { id } = useLocalSearchParams();
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -24,7 +26,6 @@ export default function MovieDetailsScreen() {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const apiUrl = 'http://localhost:3000';
         const response = await axios.get(`${apiUrl}/movies/${id}`);
         setMovie(response.data);
       } catch (error) {
@@ -42,7 +43,6 @@ export default function MovieDetailsScreen() {
   const handleDelete = async () => {
     const deleteAction = async () => {
       try {
-        const apiUrl = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
         await axios.delete(`${apiUrl}/movies/${id}`);
         if (Platform.OS !== 'web') {
           Alert.alert("Sucesso", "Filme excluído!");
@@ -84,7 +84,6 @@ export default function MovieDetailsScreen() {
   const toggleFavorite = async () => {
     if (!movie) return;
     try {
-      const apiUrl = 'http://localhost:3000';
       const updatedMovie = { ...movie, isFavorite: !movie.isFavorite };
       await axios.patch(`${apiUrl}/movies/${id}`, { isFavorite: !movie.isFavorite });
       setMovie(updatedMovie);
@@ -151,16 +150,18 @@ export default function MovieDetailsScreen() {
           
           <View style={styles.metaRow}>
             <Text style={styles.metaText}>{movie.year}</Text>
+            <Text style={styles.metaText}> • </Text>
+            <Text style={styles.metaText}>{movie.categories?.join(', ')}</Text>
           </View>
 
           <TouchableOpacity style={styles.playButton} onPress={toggleFavorite}>
             <Text style={[styles.playButtonText, movie.isFavorite && { color: Colors.primary }]}>
-              {movie.isFavorite ? '♥ Favorito' : '♡ Favoritar'}
+              {movie.isFavorite ? 'Favorito' : 'Favoritar'}
             </Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={[styles.downloadButton, { backgroundColor: Colors.error }]} onPress={handleDelete}>
-            <Text style={styles.downloadButtonText}>🗑 Excluir do Catálogo</Text>
+            <Text style={styles.downloadButtonText}>Excluir do Catálogo</Text>
           </TouchableOpacity>
 
           <Text style={styles.description}>{movie.description}</Text>

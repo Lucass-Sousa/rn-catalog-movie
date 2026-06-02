@@ -1,22 +1,6 @@
 {
   "movies": [
     {
-      "id": "2",
-      "title": "Wandinha",
-      "image": "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
-      "year": "2022",
-      "description": "Inteligente, sarcástica e um pouco morta por dentro, Wandinha Addams investiga uma onda de assassinatos enquanto faz novos amigos - e inimigos - na Escola Nunca Mais.",
-      "categories": [
-        "Comédia",
-        "Fantasia",
-        "Mistério"
-      ],
-      "isFeatured": false,
-      "isRecent": true,
-      "isTrending": true,
-      "isFavorite": true
-    },
-    {
       "id": "3",
       "title": "Lúcifer",
       "image": "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
@@ -29,7 +13,7 @@
       "isFeatured": false,
       "isRecent": false,
       "isTrending": true,
-      "isFavorite": true
+      "isFavorite": false
     },
     {
       "id": "4",
