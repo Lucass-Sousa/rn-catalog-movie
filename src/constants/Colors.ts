@@ -1,7 +1,7 @@
 export const Colors = {
-  primary: '#FFC107', // Yellow
-  background: '#0A192F', // Dark Blue
-  surface: '#112240', // Slightly lighter blue for cards
+  primary: '#FFC107',
+  background: '#0A192F',
+  surface: '#112240', 
   text: '#FFFFFF', 
   textSecondary: '#8892B0', 
   black: '#000000',

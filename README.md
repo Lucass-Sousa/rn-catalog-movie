@@ -1,56 +1,86 @@
-# Welcome to your Expo app 👋
+# NExTIFlix 🍿
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+![NExTIFlix](https://img.shields.io/badge/Status-Concluído-success)
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=flat&logo=react&logoColor=61DAFB)
+![Expo](https://img.shields.io/badge/Expo-1B1F23?style=flat&logo=expo&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white)
 
-## Get started
+O **NExTIFlix** é um aplicativo móvel de catálogo de filmes e séries, desenvolvido como projeto de avaliação universitária (AVP 2 - Mobile). Ele simula o funcionamento de uma plataforma de streaming moderna, onde é possível visualizar lançamentos, pesquisar títulos, adicionar novos filmes e gerenciar seus favoritos.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🚀 Funcionalidades
 
-2. Start the app
+A aplicação cumpre 100% dos requisitos estipulados no escopo do projeto:
 
-   ```bash
-   npx expo start
-   ```
+- **Catálogo Principal**: Exibição de filmes em formato de "Cards" horizontais (estilo Netflix), contendo Imagem de Capa, Título e Gênero.
+- **Detalhes do Filme**: Tela aprofundada exibindo informações do filme selecionado, incluindo Ano de Lançamento e Sinopse.
+- **Gerenciamento de Favoritos**: Possibilidade de favoritar/desfavoritar títulos, com reflexo imediato no backend e uma aba exclusiva para consultar a "Minha Lista".
+- **Adicionar Novo Filme**: Formulário completo acessível na aba inferior para a inclusão via `POST` de um novo título no banco de dados.
+- **Remoção de Títulos**: Opção de deletar um filme permanentemente do catálogo, validando as informações com um alerta nativo.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠️ Tecnologias e Arquitetura
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+O desenvolvimento seguiu rigorosos padrões técnicos exigidos e também agregou **Boas Práticas de Mercado (Clean Code / SOLID)**:
 
-## Get a fresh project
+- **React Native & Expo Router**: Utilizado o padrão de roteamento via pasta `src/app` garantindo navegação fluída por abas (Tabs).
+- **React Hooks**: Gerenciamento intensivo de ciclo de vida e estado global temporário através de `useState`, `useEffect` e `useFocusEffect` (para atualizações em tempo real ao transitar entre abas).
+- **Axios & API Service Layer**: Consumo de API padronizado. Todas as chamadas REST estão centralizadas em um **Service Pattern** (`src/services/api.ts`), facilitando manutenção e leitura do código nas telas.
+- **Separação de Preocupações (SoC)**: A estrutura de telas abandonou o acoplamento de código. As lógicas de UI (`index.tsx`) e folhas de estilo (`styles.ts`) foram isoladas perfeitamente no diretório `src/screens`.
+- **JSON Server**: Backend fake emulando perfeitamente um banco de dados NoSQL rodando localmente para as requisições assíncronas em rede local.
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
+## 📁 Estrutura de Pastas
+
+```text
+rn-catalog-movie/
+├── db.json                 # Banco de Dados Fake
+├── src/
+│   ├── app/                # Rotas da aplicação (Expo Router)
+│   ├── components/         # Componentes reutilizáveis
+│   ├── constants/          # Constantes como Cores da paleta da marca
+│   ├── screens/            # Lógica (index.tsx) e Estilos (styles.ts)
+│   │   ├── AddMovieScreen/
+│   │   ├── CatalogScreen/
+│   │   ├── FavoritesScreen/
+│   │   └── MovieDetailsScreen/
+│   └── services/           # Regras de Negócio e HTTP (api.ts)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-### Other setup steps
+## 💻 Como Rodar o Projeto
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### 1. Requisitos
+- Node.js instalado.
+- Expo CLI ou Expo Go no seu smartphone.
 
-## Learn more
+### 2. Instalação
+Clone este repositório e instale as dependências:
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Rodando o Banco de Dados (JSON Server)
+Em um terminal separado, inicie a sua Fake API:
+```bash
+npm run server
+```
+*A API ficará acessível na porta `3000` (http://localhost:3000).*
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 4. Rodando o App (Frontend)
+Em outro terminal, execute o ambiente do Expo:
+```bash
+npx expo start --clear
+```
 
-## Join the community
+Leia o QR Code com o aplicativo **Expo Go** (Android/iOS) ou aperte `a` para rodar no Emulador Android caso tenha o Android Studio configurado.
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🎓 Sobre
+
+Desenvolvido para avaliação da disciplina de Programação Mobile. Focado em estabilidade de rede, componentização limpa e arquitetura manutenível.
