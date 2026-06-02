@@ -1,8 +1,8 @@
 import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
-import { Link } from "expo-router";
-import { useState, useEffect } from "react"; // 1. Importamos os Hooks
+import { Link, useFocusEffect } from "expo-router";
+import { useState, useCallback } from "react"; // 1. Importamos os Hooks
 import axios from "axios";
 
 interface Movie {
@@ -19,9 +19,11 @@ export default function CatalogScreen() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true); // Controla o carregamento
 
-  useEffect(() => {
-    fetchMovies();
-  }, []); 
+  useFocusEffect(
+    useCallback(() => {
+      fetchMovies();
+    }, [])
+  );
 
   const fetchMovies = async () => {
     try {
@@ -36,7 +38,6 @@ export default function CatalogScreen() {
     }
   };
 
-  // Filtrando os dados que chegaram do servidor
   const featuredMovie = movies.find(m => m.isFeatured) || movies[0];
   const trendingMovies = movies.filter(m => m.isTrending);
   const recentMovies = movies.filter(m => m.isRecent);
@@ -51,7 +52,7 @@ export default function CatalogScreen() {
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
           {/* Cabeçalho */}
           <View style={styles.header}>
-            <Text style={styles.logo}>NExTIFlix</Text>
+            <Image source={require('../../assets/logo-nxt.png')} style={styles.logoImage} resizeMode="contain" />
           </View>
 
           {/* Destaque Principal */}
@@ -82,29 +83,41 @@ export default function CatalogScreen() {
           {/* Lista de Filmes: Em Alta */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Em Alta</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
-              {trendingMovies.map(movie => (
-                <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
-                  <TouchableOpacity>
-                    <Image source={{ uri: movie.image }} style={styles.moviePoster} />
-                  </TouchableOpacity>
-                </Link>
-              ))}
-            </ScrollView>
+            {trendingMovies.length === 0 ? (
+              <Text style={styles.emptyMessage}>Nenhum filme disponível no momento.</Text>
+            ) : (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
+                {trendingMovies.map(movie => (
+                  <Link key={movie.id} href={`/movie/${movie.id}`} asChild>
+                    <TouchableOpacity style={styles.movieCard}>
+                      <Image source={{ uri: movie.image }} style={styles.moviePoster} />
+                      <Text style={styles.movieTitle} numberOfLines={1}>{movie.title}</Text>
+                      <Text style={styles.movieGenre} numberOfLines={1}>{movie.categories?.[0] || 'Desconhecido'}</Text>
+                    </TouchableOpacity>
+                  </Link>
+                ))}
+              </ScrollView>
+            )}
           </View>
 
           {/* Lista de Filmes: Adicionados Recentemente */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Adicionados Recentemente</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
-              {recentMovies.map(movie => (
-                <Link key={`recent-${movie.id}`} href={`/movie/${movie.id}`} asChild>
-                  <TouchableOpacity>
-                    <Image source={{ uri: movie.image }} style={styles.moviePoster} />
-                  </TouchableOpacity>
-                </Link>
-              ))}
-            </ScrollView>
+            {recentMovies.length === 0 ? (
+              <Text style={styles.emptyMessage}>Nenhum título recente.</Text>
+            ) : (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.movieList}>
+                {recentMovies.map(movie => (
+                  <Link key={`recent-${movie.id}`} href={`/movie/${movie.id}`} asChild>
+                    <TouchableOpacity style={styles.movieCard}>
+                      <Image source={{ uri: movie.image }} style={styles.moviePoster} />
+                      <Text style={styles.movieTitle} numberOfLines={1}>{movie.title}</Text>
+                      <Text style={styles.movieGenre} numberOfLines={1}>{movie.categories?.[0] || 'Desconhecido'}</Text>
+                    </TouchableOpacity>
+                  </Link>
+                ))}
+              </ScrollView>
+            )}
           </View>
 
         </ScrollView>
@@ -125,10 +138,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
-  logo: {
-    color: Colors.primary,
-    fontSize: 24,
-    fontWeight: 'bold',
+  logoImage: {
+    height: 45,
+    width: 45,
+    marginLeft: 0,
   },
   headerLinks: {
     flexDirection: 'row',
@@ -205,11 +218,32 @@ const styles = StyleSheet.create({
   movieList: {
     paddingLeft: 10,
   },
+  movieCard: {
+    width: 110,
+    marginRight: 10,
+  },
   moviePoster: {
     width: 110,
     height: 160,
     borderRadius: 4,
-    marginRight: 10,
     backgroundColor: Colors.surface,
+    marginBottom: 5,
+  },
+  movieTitle: {
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  movieGenre: {
+    color: Colors.textSecondary,
+    fontSize: 10,
+  },
+  emptyMessage: {
+    color: Colors.textSecondary,
+    fontSize: 14,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 10,
+    fontStyle: 'italic',
   }
 });

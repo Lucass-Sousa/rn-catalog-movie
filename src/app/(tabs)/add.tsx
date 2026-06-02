@@ -1,9 +1,60 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Platform, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { router } from "expo-router";
+import { useState } from "react";
+import axios from "axios";
 
 export default function AddMovieScreen() {
+  const [title, setTitle] = useState('');
+  const [image, setImage] = useState('');
+  const [year, setYear] = useState('');
+  const [genre, setGenre] = useState('');
+  const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSave = async () => {
+    if (!title || !image || !year || !genre || !description) {
+      Alert.alert("Erro", "Preencha todos os campos, incluindo a sinopse.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const apiUrl =  'http://localhost:3000';
+      const newMovie = {
+        title,
+        image,
+        year,
+        categories: [genre], // Stored as array to match existing db structure
+        isFeatured: false,
+        isTrending: false,
+        isRecent: true,
+        isFavorite: false,
+        description,
+        ageLimit: "L", // Default age limit
+        seasons: "Filme", // Default
+        cast: "Elenco desconhecido" // Default
+      };
+
+      await axios.post(`${apiUrl}/movies`, newMovie);
+      Alert.alert("Sucesso", "Filme adicionado com sucesso!");
+      
+      // Clear form
+      setTitle('');
+      setImage('');
+      setYear('');
+      setGenre('');
+      setDescription('');
+      
+      router.push('/(tabs)');
+    } catch (error) {
+      console.error("Erro ao salvar filme:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao salvar o título.");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -16,6 +67,8 @@ export default function AddMovieScreen() {
           style={styles.input}
           placeholder="Ex: Breaking Bad"
           placeholderTextColor={Colors.textSecondary}
+          value={title}
+          onChangeText={setTitle}
         />
 
         <Text style={styles.label}>URL da Imagem de Capa</Text>
@@ -23,6 +76,8 @@ export default function AddMovieScreen() {
           style={styles.input}
           placeholder="https://..."
           placeholderTextColor={Colors.textSecondary}
+          value={image}
+          onChangeText={setImage}
         />
 
         <Text style={styles.label}>Ano de Lançamento</Text>
@@ -31,19 +86,36 @@ export default function AddMovieScreen() {
           placeholder="Ex: 2024"
           placeholderTextColor={Colors.textSecondary}
           keyboardType="numeric"
+          value={year}
+          onChangeText={setYear}
         />
 
-        <Text style={styles.label}>Descrição</Text>
+        <Text style={styles.label}>Gênero</Text>
+        <TextInput 
+          style={styles.input}
+          placeholder="Ex: Ação, Drama"
+          placeholderTextColor={Colors.textSecondary}
+          value={genre}
+          onChangeText={setGenre}
+        />
+
+        <Text style={styles.label}>Sinopse</Text>
         <TextInput 
           style={[styles.input, styles.textArea]}
-          placeholder="Sinopse do título..."
+          placeholder="Digite a sinopse do título..."
           placeholderTextColor={Colors.textSecondary}
           multiline={true}
           numberOfLines={4}
+          value={description}
+          onChangeText={setDescription}
         />
 
-        <TouchableOpacity style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Adicionar ao Catálogo</Text>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={loading}>
+          {loading ? (
+            <ActivityIndicator color={Colors.white} />
+          ) : (
+            <Text style={styles.saveButtonText}>Adicionar ao Catálogo</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

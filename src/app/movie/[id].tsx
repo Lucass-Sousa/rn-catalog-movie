@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity, ActivityIndicator, Platform, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/Colors";
 import { useLocalSearchParams } from "expo-router";
@@ -16,6 +16,7 @@ interface Movie {
   description: string;
   cast: string;
   categories: string[];
+  isFavorite?: boolean;
 }
 
 export default function MovieDetailsScreen() {
@@ -41,6 +42,60 @@ export default function MovieDetailsScreen() {
     }
   }, [id]);
 
+  const handleDelete = async () => {
+    const deleteAction = async () => {
+      try {
+        const apiUrl = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+        await axios.delete(`${apiUrl}/movies/${id}`);
+        if (Platform.OS !== 'web') {
+          Alert.alert("Sucesso", "Filme excluído!");
+        } else {
+          window.alert("Filme excluído!");
+        }
+        router.replace('/(tabs)');
+      } catch (error) {
+        console.error("Erro ao excluir filme:", error);
+        if (Platform.OS !== 'web') {
+          Alert.alert("Erro", "Não foi possível excluir o filme.");
+        } else {
+          window.alert("Não foi possível excluir o filme.");
+        }
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      const confirmDelete = window.confirm("Tem certeza que deseja excluir este título do catálogo?");
+      if (confirmDelete) {
+        deleteAction();
+      }
+    } else {
+      Alert.alert(
+        "Excluir Filme",
+        "Tem certeza que deseja excluir este título do catálogo?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          { 
+            text: "Excluir", 
+            style: "destructive",
+            onPress: deleteAction
+          }
+        ]
+      );
+    }
+  };
+
+  const toggleFavorite = async () => {
+    if (!movie) return;
+    try {
+      const apiUrl = 'http://localhost:3000';
+      const updatedMovie = { ...movie, isFavorite: !movie.isFavorite };
+      await axios.patch(`${apiUrl}/movies/${id}`, { isFavorite: !movie.isFavorite });
+      setMovie(updatedMovie);
+    } catch (error) {
+      console.error("Erro ao favoritar filme:", error);
+    }
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -56,7 +111,16 @@ export default function MovieDetailsScreen() {
       <SafeAreaView style={styles.container}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: Colors.white }}>Filme não encontrado.</Text>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 20 }}>
+          <TouchableOpacity 
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/(tabs)');
+              }
+            }} 
+            style={{ marginTop: 20 }}
+          >
             <Text style={{ color: Colors.primary }}>Voltar</Text>
           </TouchableOpacity>
         </View>
@@ -72,7 +136,13 @@ export default function MovieDetailsScreen() {
           <Image source={{ uri: movie.image }} style={styles.image} />
           <TouchableOpacity 
             style={styles.backButton}
-            onPress={() => router.back()}
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/(tabs)');
+              }
+            }}
           >
             <Text style={styles.backButtonText}>X</Text>
           </TouchableOpacity>
@@ -95,17 +165,19 @@ export default function MovieDetailsScreen() {
             <Text style={styles.playButtonText}>▶ Assistir</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.downloadButton}>
-            <Text style={styles.downloadButtonText}>↓ Baixar</Text>
+          <TouchableOpacity style={[styles.downloadButton, { backgroundColor: Colors.error }]} onPress={handleDelete}>
+            <Text style={styles.downloadButtonText}>🗑 Excluir do Catálogo</Text>
           </TouchableOpacity>
 
           <Text style={styles.description}>{movie.description}</Text>
           <Text style={styles.cast}>Elenco: {movie.cast}</Text>
 
           <View style={styles.actionsRow}>
-            <TouchableOpacity style={styles.actionItem}>
-              <Text style={styles.actionIcon}>+</Text>
-              <Text style={styles.actionText}>Minha Lista</Text>
+            <TouchableOpacity style={styles.actionItem} onPress={toggleFavorite}>
+              <Text style={[styles.actionIcon, movie.isFavorite && { color: Colors.primary }]}>
+                {movie.isFavorite ? '♥' : '♡'}
+              </Text>
+              <Text style={styles.actionText}>{movie.isFavorite ? 'Favorito' : 'Favoritar'}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionItem}>
               <Text style={styles.actionIcon}>👍</Text>

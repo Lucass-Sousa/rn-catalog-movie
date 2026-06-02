@@ -1,8 +1,8 @@
-import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
-import { Link, router } from "expo-router";
-import { useState, useEffect } from "react";
+import { Link, router, useFocusEffect } from "expo-router";
+import { useState, useCallback } from "react";
 import axios from "axios";
 
 // O mesmo tipo de dados da tela inicial
@@ -18,17 +18,20 @@ export default function FavoritesScreen() {
   const [favorites, setFavorites] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 2. O Gatilho (useEffect)
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
+  // 2. O Gatilho (useFocusEffect para atualizar sempre que a aba abrir)
+  useFocusEffect(
+    useCallback(() => {
+      fetchFavorites();
+    }, [])
+  );
 
   // 3. O Garçom (Ação com Axios)
   const fetchFavorites = async () => {
     try {
       // Como o json-server é legal, podemos filtrar direto na URL!
       // O "?isFavorite=true" diz para ele trazer apenas os favoritos.
-      const response = await axios.get('http://localhost:3000/movies?isFavorite=true');
+      const apiUrl = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+      const response = await axios.get(`${apiUrl}/movies?isFavorite=true`);
       setFavorites(response.data);
     } catch (error) {
       console.error("Erro ao buscar favoritos:", error);
