@@ -1,11 +1,10 @@
-import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { Link } from "expo-router";
 import { useState, useEffect } from "react"; // 1. Importamos os Hooks
 import axios from "axios";
 
-// Definimos o formato de um Filme no Typescript
 interface Movie {
   id: string;
   title: string;
@@ -17,27 +16,23 @@ interface Movie {
 }
 
 export default function CatalogScreen() {
-  // 2. STATE (Estado) - Onde guardamos os dados
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true); // Controla o carregamento
 
-  // 3. EFFECT (Efeito) - Quando buscar os dados (ao abrir a tela)
   useEffect(() => {
     fetchMovies();
-  }, []); // A lista vazia [] significa "execute apenas uma vez quando a tela carregar"
+  }, []); 
 
-  // 4. FETCH (Ação) - Como buscar os dados
   const fetchMovies = async () => {
     try {
-      // DICA: No emulador Android, use '10.0.2.2' em vez de 'localhost'
-      // Com o Axios, os dados já vêm prontos dentro de "response.data"
-      const response = await axios.get('http://localhost:3000/movies'); 
+      const apiUrl = 'http://localhost:3000';
+      const response = await axios.get(`${apiUrl}/movies`); 
       
-      setMovies(response.data); // Salvamos os filmes na nossa variável de estado
+      setMovies(response.data); 
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
     } finally {
-      setLoading(false); // Tiramos a tela de carregamento
+      setLoading(false); 
     }
   };
 

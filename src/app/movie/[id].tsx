@@ -1,29 +1,75 @@
-import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/Colors";
 import { useLocalSearchParams } from "expo-router";
 import { router } from "expo-router";
-// Dados mockados
-const MOVIE_DETAILS = {
-  id: '1',
-  title: 'Stranger Things',
-  image: 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8sXcpCWvm.jpg',
-  year: '2022',
-  ageLimit: '16',
-  seasons: '4 Temporadas',
-  description: 'Quando um garoto desaparece, a cidade toda participa nas buscas. Mas o que encontram são segredos, forças sobrenaturais e uma menina.',
-  cast: 'Winona Ryder, David Harbour, Millie Bobby Brown'
-};
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+interface Movie {
+  id: string;
+  title: string;
+  image: string;
+  year: string;
+  ageLimit: string;
+  seasons: string;
+  description: string;
+  cast: string;
+  categories: string[];
+}
 
 export default function MovieDetailsScreen() {
   const { id } = useLocalSearchParams();
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMovieDetails = async () => {
+      try {
+        const apiUrl = 'http://localhost:3000';
+        const response = await axios.get(`${apiUrl}/movies/${id}`);
+        setMovie(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar os detalhes do filme:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchMovieDetails();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!movie) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: Colors.white }}>Filme não encontrado.</Text>
+          <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 20 }}>
+            <Text style={{ color: Colors.primary }}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {/* Imagem do Filme */}
         <View style={styles.imageContainer}>
-          <Image source={{ uri: MOVIE_DETAILS.image }} style={styles.image} />
+          <Image source={{ uri: movie.image }} style={styles.image} />
           <TouchableOpacity 
             style={styles.backButton}
             onPress={() => router.back()}
@@ -34,15 +80,15 @@ export default function MovieDetailsScreen() {
 
         {/* Informações */}
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{MOVIE_DETAILS.title}</Text>
+          <Text style={styles.title}>{movie.title}</Text>
           
           <View style={styles.metaRow}>
             <Text style={styles.matchText}>98% Relevante</Text>
-            <Text style={styles.metaText}>{MOVIE_DETAILS.year}</Text>
+            <Text style={styles.metaText}>{movie.year}</Text>
             <View style={styles.ageBadge}>
-              <Text style={styles.ageText}>{MOVIE_DETAILS.ageLimit}</Text>
+              <Text style={styles.ageText}>{movie.ageLimit}</Text>
             </View>
-            <Text style={styles.metaText}>{MOVIE_DETAILS.seasons}</Text>
+            <Text style={styles.metaText}>{movie.seasons}</Text>
           </View>
 
           <TouchableOpacity style={styles.playButton}>
@@ -53,8 +99,8 @@ export default function MovieDetailsScreen() {
             <Text style={styles.downloadButtonText}>↓ Baixar</Text>
           </TouchableOpacity>
 
-          <Text style={styles.description}>{MOVIE_DETAILS.description}</Text>
-          <Text style={styles.cast}>Elenco: {MOVIE_DETAILS.cast}</Text>
+          <Text style={styles.description}>{movie.description}</Text>
+          <Text style={styles.cast}>Elenco: {movie.cast}</Text>
 
           <View style={styles.actionsRow}>
             <TouchableOpacity style={styles.actionItem}>
