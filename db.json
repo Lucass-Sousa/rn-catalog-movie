@@ -1,0 +1,36 @@
+{
+  "movies": [
+    {
+      "id": "3",
+      "title": "Lúcifer",
+      "image": "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
+      "year": "2021",
+      "description": "Entediado com a vida nas trevas, o diabo se muda para Los Angeles, abre um piano-bar e empresta sua sabedoria a uma investigadora de assassinatos.",
+      "categories": [
+        "Crime",
+        "Fantasia"
+      ],
+      "isFeatured": false,
+      "isRecent": false,
+      "isTrending": true,
+      "isFavorite": false
+    },
+    {
+      "id": "4",
+      "title": "A Casa do Dragão",
+      "image": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+      "year": "2022",
+      "description": "A história da Casa Targaryen, 200 anos antes dos eventos de Game of Thrones.",
+      "categories": [
+        "Ação",
+        "Aventura",
+        "Drama",
+        "Fantasia"
+      ],
+      "isFeatured": false,
+      "isRecent": true,
+      "isTrending": true,
+      "isFavorite": false
+    }
+  ]
+}
